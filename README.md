@@ -1,6 +1,6 @@
 # Tamper-Evident Append-Only Log Service
 
-A production-inspired, beginner-friendly **Tamper-Evident Append-Only Log Service** built using Node.js, Express, and MySQL. This repository is structured to be easy to run locally, highly performant, clean to read, and ready to explain in technical interviews.
+A production-inspired, beginner-friendly **Tamper-Evident Append-Only Log Service** built using Node.js, Express, and MySQL. This repository is structured to be easy to run locally, highly performant.
 
 ---
 
