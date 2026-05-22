@@ -303,4 +303,7 @@ Key areas of AI assistance included:
 You can view the full transcript of prompts and contributions in [AI_usage_log.md].
 
 ---
+## UI
+<img width="1919" height="981" alt="image" src="https://github.com/user-attachments/assets/e3ae16b5-6760-460e-aec3-2786705fa73c" />
+<img width="1919" height="977" alt="image" src="https://github.com/user-attachments/assets/faa41a6e-d186-46e2-b6da-1f9e8fae0768" />
 
