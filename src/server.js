@@ -6,6 +6,7 @@ const logRoutes = require('./routes/logs');
 // Ensure environment variables are loaded from the .env file
 require('dotenv').config();
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
