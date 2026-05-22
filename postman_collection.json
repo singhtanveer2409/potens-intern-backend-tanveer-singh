@@ -1,0 +1,197 @@
+{
+  "info": {
+    "_postman_id": "8c5932df-0599-4d6d-88f5-932d2011bba8",
+    "name": "Tamper-Evident Log Service",
+    "description": "API collection for testing the Tamper-Evident Append-Only Log Service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Append Log (Success)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "mysecretkey",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actor\": \"admin\",\n  \"action\": \"create-user\",\n  \"payload\": {\n    \"userId\": 123\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/log",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "log"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Append Log (Unauthorized)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actor\": \"admin\",\n  \"action\": \"create-user\",\n  \"payload\": {\n    \"userId\": 123\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/log",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "log"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Append Log (Validation Failure)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "mysecretkey",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actor\": \"\",\n  \"action\": \"create-user\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/log",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "log"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Log by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "mysecretkey",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/log/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "log",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Verify Integrity Chain",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "mysecretkey",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/verify",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "verify"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Export Logs (With Filters)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "mysecretkey",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/export?actor=admin&startDate=2026-05-20&endDate=2026-05-22",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "export"
+          ],
+          "query": [
+            {
+              "key": "actor",
+              "value": "admin"
+            },
+            {
+              "key": "startDate",
+              "value": "2026-05-20"
+            },
+            {
+              "key": "endDate",
+              "value": "2026-05-22"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
