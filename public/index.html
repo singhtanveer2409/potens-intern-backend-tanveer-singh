@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelLog | Crypto-Auditable Ledger Dashboard</title>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Top Navigation / Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="logo-text">
+        <span class="brand-name">SentinelLog</span>
+        <span class="brand-tag">Tamper-Evident Ledger</span>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <div class="status-badge connected" id="server-status">
+        <span class="pulse-dot"></span>
+        <span class="status-text">Server Connected</span>
+      </div>
+      
+      <div class="api-key-container">
+        <i class="fa-solid fa-key api-key-icon"></i>
+        <input type="password" id="api-key-input" value="mysecretkey" placeholder="Enter API Key">
+        <button id="toggle-key-visibility" class="icon-btn" title="Toggle Visibility">
+          <i class="fa-regular fa-eye-slash"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    
+    <!-- Top Stats / Hero Banner -->
+    <section class="banner-grid">
+      <!-- Global Security Banner -->
+      <div class="card glass-card status-card secure" id="global-status-card">
+        <div class="status-card-header">
+          <div class="badge-title">SYSTEM INTEGRITY STATUS</div>
+          <div class="status-icon" id="global-status-icon"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+        <div class="status-value" id="global-status-text">SECURED</div>
+        <div class="status-desc" id="global-status-desc">All cryptographic hashes are locked and sequential integrity is verified.</div>
+      </div>
+
+      <!-- Action Panel: Scanner -->
+      <div class="card glass-card scanner-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-radar"></i> Audit Scanner</h3>
+          <p class="subtitle">Scans the complete block chain sequentially</p>
+        </div>
+        <div class="scanner-body">
+          <div class="scan-progress-container" style="display: none;">
+            <div class="scan-bar">
+              <div class="scan-bar-fill" id="scan-bar-fill"></div>
+            </div>
+            <div class="scan-info">Verifying block linkage integrity...</div>
+          </div>
+          <button class="btn btn-primary btn-full" id="run-scan-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Run Cryptographic Audit
+          </button>
+        </div>
+      </div>
+      
+      <!-- Metrics Info -->
+      <div class="card glass-card metrics-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-chart-simple"></i> Ledger Stats</h3>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <span class="metric-label">Total Blocks</span>
+            <span class="metric-val" id="total-blocks-count">0</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Last Audited</span>
+            <span class="metric-val text-muted" id="last-audited-time">Never</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Grid -->
+    <div class="workspace-grid">
+      
+      <!-- Left Column: Operations -->
+      <div class="column-operations">
+        
+        <!-- Form: Append Log -->
+        <div class="card glass-card form-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-plus-circle"></i> Append Log Record</h3>
+            <p class="subtitle">Securely record a transaction onto the immutable ledger</p>
+          </div>
+          <form id="append-log-form">
+            <div class="form-group">
+              <label for="actor-input">Actor</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user-shield"></i>
+                <input type="text" id="actor-input" placeholder="e.g. auth-service, user_manager" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="action-input">Action</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-code-commit"></i>
+                <input type="text" id="action-input" placeholder="e.g. user-login, delete-record" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="payload-input">Payload (JSON Object)</label>
+              <textarea id="payload-input" placeholder='{ "userId": 101, "role": "admin" }' required></textarea>
+              <div class="validation-helper text-muted" id="json-validation-msg">
+                <i class="fa-solid fa-info-circle"></i> Valid JSON required
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-accent btn-full" id="append-btn">
+              <span class="btn-text">Sign & Write Block</span>
+              <i class="fa-solid fa-signature"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Form: Tamper Simulator -->
+        <div class="card glass-card tamper-card">
+          <div class="card-header border-red">
+            <h3 class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Tampering Simulator</h3>
+            <p class="subtitle">Perform direct, unauthorized DB modifications to test cryptographic alarms</p>
+          </div>
+          <div class="tamper-body">
+            <div class="form-group">
+              <label for="tamper-id-select">Select Block ID to Corrupt</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-cubes"></i>
+                <select id="tamper-id-select">
+                  <option value="" disabled selected>No blocks available</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tamper-actor">Malicious Actor Edit</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user-ninja"></i>
+                <input type="text" id="tamper-actor" placeholder="Leave empty to keep original">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tamper-action">Malicious Action Edit</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-bug"></i>
+                <input type="text" id="tamper-action" placeholder="Leave empty to keep original">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tamper-payload">Malicious Payload Edit (JSON String)</label>
+              <textarea id="tamper-payload" placeholder='e.g. {"malicious": true, "balance": 999999}'></textarea>
+            </div>
+
+            <button type="button" class="btn btn-red btn-full" id="tamper-btn">
+              <i class="fa-solid fa-skull-crossbones"></i> Inject Database Tamper
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Visualizer & Chain -->
+      <div class="column-visualizer">
+        
+        <div class="card glass-card visualizer-card">
+          <div class="card-header flex-header">
+            <div>
+              <h3><i class="fa-solid fa-link"></i> Cryptographic Ledger Chain</h3>
+              <p class="subtitle">Real-time hash chain representation linked sequentially</p>
+            </div>
+            <button class="btn btn-secondary icon-btn-text" id="refresh-chain-btn" title="Refresh Chain">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh
+            </button>
+          </div>
+          
+          <div class="chain-viewport" id="chain-viewport">
+            <div class="empty-state">
+              <i class="fa-solid fa-database empty-icon"></i>
+              <p>No log blocks found in database.</p>
+              <p class="subtitle">Submit the form on the left to write the genesis block!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Export & Filter Terminal Section -->
+    <section class="export-terminal-section">
+      <div class="card glass-card terminal-card">
+        <div class="card-header flex-header">
+          <div>
+            <h3><i class="fa-solid fa-terminal"></i> Log Export Terminal</h3>
+            <p class="subtitle">Filtered, verifiable JSON exports from GET /export</p>
+          </div>
+        </div>
+        
+        <div class="export-controls">
+          <div class="control-group">
+            <label for="export-actor">Filter Actor</label>
+            <input type="text" id="export-actor" placeholder="e.g. auth-service">
+          </div>
+          
+          <div class="control-group">
+            <label for="export-start-date">Start Date</label>
+            <input type="date" id="export-start-date">
+          </div>
+
+          <div class="control-group">
+            <label for="export-end-date">End Date</label>
+            <input type="date" id="export-end-date">
+          </div>
+
+          <button class="btn btn-accent" id="export-btn">
+            <i class="fa-solid fa-file-export"></i> Fetch & Export
+          </button>
+        </div>
+
+        <div class="terminal-display">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <span class="term-btn term-close"></span>
+              <span class="term-btn term-minimize"></span>
+              <span class="term-btn term-maximize"></span>
+            </div>
+            <div class="terminal-title">logs_export.json</div>
+            <button class="copy-term-btn" id="copy-export-btn" title="Copy Output"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre class="terminal-body"><code id="terminal-output">// Query results will render here...</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>SentinelLog Audit Framework © 2026. Designed for backend engineering assessment demonstrates SHA-256 linear proof chains.</p>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast hidden">
+    <div class="toast-content">
+      <i class="fa-solid fa-circle-info toast-icon"></i>
+      <span class="toast-message">Notification message here</span>
+    </div>
+    <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
